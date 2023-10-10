@@ -21,9 +21,19 @@ class UpdateReviewers(GithubSubcommand):
         self._reviewers = set()
         self._team_reviewers = set()
 
-        parser.add_argument("repo_path", type=str)
-        parser.add_argument("pr_number", type=int)
-        parser.add_argument("config_path", type=Path)
+        parser.add_argument(
+            "repo_path",
+            type=str,
+            help="full name of the GitHub repository (format: OWNER/REPO)",
+        )
+        parser.add_argument(
+            "pr_number", type=int, help="the number of the pull request to check"
+        )
+        parser.add_argument(
+            "config_path",
+            type=Path,
+            help="the path to the reviewers config file",
+        )
 
         super().__init__(parser)
 

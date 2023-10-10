@@ -6,18 +6,11 @@ It installs poetry and all module dependencies.
 
 ## Usage
 
-Add the following steps to your workflow:
+Add the following step to your workflow:
 
 ```yml
-- name: Checkout Ryujinx-Mako
-  uses: actions/checkout@v3
-  with:
-    repository: Ryujinx/Ryujinx-Mako
-    ref: master
-    path: ".ryujinx-mako"
-
 - name: Setup Ryujinx-Mako
-  uses: .ryujinx-mako/.github/actions/setup-mako
+  uses: Ryujinx/Ryujinx-Mako/.github/actions/setup-mako@master
 ```
 
 

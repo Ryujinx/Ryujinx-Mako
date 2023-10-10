@@ -3,6 +3,7 @@ import logging
 
 from ryujinx_mako import commands
 from ryujinx_mako._const import SCRIPT_NAME
+from ryujinx_mako.commands import Subcommand
 
 parser = argparse.ArgumentParser(
     prog=SCRIPT_NAME,
@@ -19,10 +20,11 @@ for subcommand in commands.SUBCOMMANDS:
     subcommand_parser = subparsers.add_parser(
         subcommand.name(),
         description=subcommand.description(),
-        add_help=True,
+        help=subcommand.description(),
     )
+    Subcommand.add_subcommand(subcommand.name(), subcommand(subcommand_parser))
     # Keep a reference to the subcommand
-    subcommands.append(subcommand(subcommand_parser))
+    subcommands.append(Subcommand.get_subcommand(subcommand.name()))
 
 
 def run():

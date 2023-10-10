@@ -1,0 +1,47 @@
+name: 'Run Ryujinx-Mako'
+description: 'Setup Mako and execute the specified subcommand'
+inputs:
+  command:
+    description: 'Subcommand to execute with Mako'
+    required: true
+  args:
+    description: 'Arguments for the specified subcommand'
+    required: true
+    default: ''
+  app_id:
+    description: 'GitHub App ID'
+    required: true
+  private_key:
+    description: 'Private key for the GitHub App'
+    required: true
+  installation_id:
+    description: 'GitHub App Installation ID'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Check if Mako was already setup
+      id: check_dest
+      run: |
+        [ -f "${{ github.action_path }}/.ryujinx-mako_setup-done" ] \
+        && echo "exists=true" >> $GITHUB_OUTPUT \
+        || echo "exists=false" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Setup Mako
+      if: steps.check_dest.outputs.exists == 'false'
+      uses: ./.github/actions/setup-mako
+
+    - name: Create setup finished flag
+      if: steps.check_dest.outputs.exists == 'false'
+      run: touch "${{ github.action_path }}/.ryujinx-mako_setup-done"
+      shell: bash
+
+    - name: Run Mako subcommand
+      uses: ./.github/actions/execute-command
+      with:
+        command: ${{ inputs.command }}
+        args: ${{ inputs.args }}
+        app_id: ${{ inputs.app_id }}
+        private_key: ${{ inputs.private_key }}
+        installation_id: ${{ inputs.installation_id }}

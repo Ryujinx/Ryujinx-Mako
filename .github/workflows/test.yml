@@ -1,0 +1,35 @@
+name: Test
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test Ryujinx-Mako (setup-git)
+        uses: ./
+        with:
+          command: setup-git
+          app_id: ${{ secrets.MAKO_APP_ID }}
+          private_key: ${{ secrets.MAKO_PRIVATE_KEY }}
+          installation_id: ${{ secrets.MAKO_INSTALLATION_ID }}
+
+  subactions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test setup-mako
+        uses: ./.github/actions/setup-mako
+
+      - name: Test execute-command (setup-git)
+        uses: ./.github/actions/execute-command
+        with:
+          command: setup-git
+          app_id: ${{ secrets.MAKO_APP_ID }}
+          private_key: ${{ secrets.MAKO_PRIVATE_KEY }}
+          installation_id: ${{ secrets.MAKO_INSTALLATION_ID }}

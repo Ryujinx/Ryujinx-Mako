@@ -1,12 +1,32 @@
-name: 'Setup Ryujinx-Mako'
-description: 'Setup the environment for Ryujinx-Mako'
+name: 'Setup Mako'
+description: 'Setup the environment for Mako'
 runs:
   using: 'composite'
   steps:
-    - run: pipx install poetry
+    - name: Get Mako path
+      id: path
+      run: |
+        echo "mako=$(realpath '${{ github.action_path }}/../../../')" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - uses: actions/setup-python@v4
+      with:
+        cache: 'poetry'
+
+    - name: Ensure pipx is available
+      run: |
+        if ! command -v pipx > /dev/null 2>&1; then
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        python3 -m pip install --user pipx
+        python3 -m pipx ensurepath
+        fi
+      shell: bash
+
+    - name: Install poetry
+      run: pipx install poetry
       shell: bash
 
     - run: |
-        cd .ryujinx-mako
+        cd "${{ steps.path.outputs.mako }}"
         poetry install --only main
       shell: bash
